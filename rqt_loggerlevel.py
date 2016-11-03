@@ -2,19 +2,19 @@ import sys
 from multiprocessing import Process
 import subprocess
 
-class RViz():
+class LoggerLevel():
 	def __init__(self):
-		self.rviz=None
+		self.ll=None
 
 	def start(self):
-		self.rviz = subprocess.Popen(['rviz'])
+		self.ll = subprocess.Popen(['rqt_logger_level'])
 
 	def stop(self):
-		self.rviz.kill()
-		self.rviz = None
+		self.ll.kill()
+		self.ll = None
 
 	def main(self):
-		if self.rviz:
+		if self.ll:
 			self.stop()
 			return False
 		else:

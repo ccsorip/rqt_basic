@@ -2,19 +2,19 @@ import sys
 from multiprocessing import Process
 import subprocess
 
-class RViz():
+class Graph():
 	def __init__(self):
-		self.rviz=None
+		self.g=None
 
 	def start(self):
-		self.rviz = subprocess.Popen(['rviz'])
+		self.g = subprocess.Popen(['rqt_graph'])
 
 	def stop(self):
-		self.rviz.kill()
-		self.rviz = None
+		self.g.kill()
+		self.g = None
 
 	def main(self):
-		if self.rviz:
+		if self.g:
 			self.stop()
 			return False
 		else:
