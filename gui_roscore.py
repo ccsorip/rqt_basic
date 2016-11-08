@@ -9,7 +9,7 @@ class Roscore():
 		self.stderr=None
 
 	def start(self):
-		self.rc = subprocess.Popen(['roscore'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		self.rc = subprocess.Popen(['roscore'], stdout=subprocess.PIPE, bufsize=1, stderr=subprocess.PIPE)
 		self.stdout = self.rc.stdout
 		self.stderr = self.rc.stderr
 

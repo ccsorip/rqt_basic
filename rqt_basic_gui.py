@@ -1,4 +1,4 @@
-import sys, os
+import sys, rospy
 from python_qt_binding.QtCore import pyqtSlot
 from python_qt_binding.QtGui import *
 from gui_roscore import Roscore
@@ -20,6 +20,18 @@ gr = Graph()
 tm = rqt_thread_manager()
 
 
+
+btn = QLabel('Parametro', w)
+btn.move(5, 50)
+
+textbox = QLineEdit(w)
+textbox.move(95, 50)
+
+btnSearch = QPushButton('Buscar', w)
+btnSearch.setStyleSheet('background-color: white; font-weight: bold')
+btnSearch.move(235, 50)
+
+
 std_out = QLabel(w)
 std_out.resize(630,90)
 std_out.move(5, 160)
@@ -34,26 +46,26 @@ std_err.setStyleSheet('background-color: grey; color: red; font-weight: bold')
 # Create a button in the window
 btn = QPushButton('Roscore', w)
 btn.setStyleSheet('background-color: red; font-weight: bold')
-btn.move(5, 0)
+btn.move(5, 5)
 
 btn2 = QPushButton('Rviz', w)
 btn2.setStyleSheet('background-color: red; font-weight: bold')
-btn2.move(5, 40)
+btn2.move(95, 5)
 
 btn3 = QPushButton('Logger Level', w)
 btn3.setStyleSheet('background-color: red; font-weight: bold')
-btn3.move(5, 80)
+btn3.move(185, 5)
 
 btn4 = QPushButton('Rqt_graph', w)
 btn4.setStyleSheet('background-color: red; font-weight: bold')
-btn4.move(5, 120)
+btn4.move(305, 5)
 
 # Create the actions
 @pyqtSlot()
 def on_clickRC():
 	if rc.main():
-		tm.start(std_out, rc.stdout)
-		tm.start(std_err, rc.stderr)
+		#tm.start(std_out, rc.stdout)
+		#tm.start(std_err, rc.stderr)
 		btn.setStyleSheet('background-color: green; font-weight: bold')
 	else:
 		btn.setStyleSheet('background-color: red; font-weight: bold')
@@ -80,12 +92,17 @@ def on_clickG():
 	else:
 		btn4.setStyleSheet('background-color: red; font-weight: bold')
 
+@pyqtSlot()
+def on_clickSearch():
+	print(textbox.text())
+	print(rospy.get_param('/' + textbox.text()))
 
 # connect the signals to the slots
 btn.clicked.connect(on_clickRC)
 btn2.clicked.connect(on_clickRVIZ)
 btn3.clicked.connect(on_clickLL)
 btn4.clicked.connect(on_clickG) 
+btnSearch.clicked.connect(on_clickSearch) 
 
 # Show the window and run the app
 w.show()
