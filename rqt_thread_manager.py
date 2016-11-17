@@ -4,7 +4,14 @@ from os import read
 from python_qt_binding.QtGui import *
 
 class rqt_thread_manager():
+
 	def show_std(self, label, fd):
+		for c in iter(lambda: fd.read(1), ''):
+			print(c)
+			#sys.stdout.write(c)
+			#fd.write(c)
+
+	def show_std2(self, label, fd):
 		str_ = fd.read(1)
 		while(str_):
 			label.setText(str_)
@@ -49,6 +56,7 @@ class rqt_thread_manager():
 		thread.start_new_thread(self.show_params, (table,))
 
 	def show_topics(self, table):
+		topics = {}
 		while True:
 			proc = subprocess.Popen(['rostopic', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			str_ = proc.stdout.read()
@@ -56,7 +64,12 @@ class rqt_thread_manager():
 			table.setRowCount(len(arr) - 1)
 			i=0
 			for a in arr:
+				if a not in topics:
+					proc2 = subprocess.Popen(['rostopic', 'type', a], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					info = proc2.stdout.read()
+					topics[a] = info
 				table.setItem(i,0, QTableWidgetItem(a))
+				table.setItem(i,1, QTableWidgetItem(topics[a]))
 				i+=1
 			pass
 		time.sleep(1)

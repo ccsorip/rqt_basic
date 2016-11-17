@@ -1,4 +1,4 @@
-import sys, rospy, os
+import sys, rospy, os, subprocess
 from python_qt_binding.QtCore import pyqtSlot
 from python_qt_binding.QtGui import *
 from gui_roscore import Roscore
@@ -18,6 +18,9 @@ rviz = RViz()
 ll = LoggerLevel()
 gr = Graph()
 tm = rqt_thread_manager()
+
+#------ Tabs in std out --------
+
 
 
 #-------table env vars-------------
@@ -47,8 +50,8 @@ tm.start_params(table_params)
 #-------table active topics-------------
 table_act_tops 	= QTableWidget()
 table_act_tops.resize(300, 200)
-table_act_tops.setColumnCount(1)
-table_act_tops.setHorizontalHeaderLabels(["TOPIC NAME"])
+table_act_tops.setColumnCount(2)
+table_act_tops.setHorizontalHeaderLabels(["TOPIC NAME", "TOPIC TYPE"])
 #-scroller
 scroller_act_tops = QScrollArea(w)
 scroller_act_tops.resize(300, 200)
@@ -166,6 +169,13 @@ def on_clickSearchEnv():
 		std_err.setText(std_err.text() + "Varabiable not found"  + "\n")
 		std_err.adjustSize()
 
+def cellClick(row,col):
+	if col == 1:
+		str_ = table_act_tops.item(row, col).text()
+		proc = subprocess.Popen(['rosmsg', 'show', str_[:-1]], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		std_out.setText(std_out.text() + proc.stdout.read())
+		std_out.adjustSize()
+
 # connect the signals to the slots
 btn.clicked.connect(on_clickRC)
 btn2.clicked.connect(on_clickRVIZ)
@@ -173,6 +183,8 @@ btn3.clicked.connect(on_clickLL)
 btn4.clicked.connect(on_clickG) 
 btnSearchParam.clicked.connect(on_clickSearchParam) 
 btnSearchEnv.clicked.connect(on_clickSearchEnv) 
+
+table_act_tops.cellClicked.connect(cellClick)
 
 # Show the window and run the app
 w.setMinimumSize(910, 610)
